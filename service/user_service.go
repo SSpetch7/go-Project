@@ -7,6 +7,8 @@ import (
 	"go-project/repository"
 	r "go-project/repository"
 	"log"
+
+	"golang.org/x/crypto/bcrypt"
 )
 
 type userService struct {
@@ -56,19 +58,33 @@ func (s userService) RegisterUser(ctx context.Context, newUser *r.NewUserRequest
 
 	fmt.Println("not dupEmail", dupEmail)
 
-	// hashedPassword, err := bcrypt.GenerateFromPassword([]byte(newUser.Password), bcrypt.DefaultCost)
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(newUser.Password), bcrypt.DefaultCost)
 
-	// if err != nil {
-	// 	return nil, err
-	// }
+	if err != nil {
+		return nil, err
+	}
 
-	// newUser.Password = string(hashedPassword)
+	newUser.Password = string(hashedPassword)
 
-	// user, err := s.userRepo.RegisterUser(newUser)
+	user, err := s.userRepo.RegisterUser(newUser)
 
-	// _ = user
+	if err != nil {
+		return nil, err
+	}
 
-	// เรียกต่อไปยัง repository
-	// return hashedPassword, nil
-	return nil, nil
+	userResponses := UserResponse{}
+
+	for _, user := range user {
+		userResponse := UserResponse{
+			UserID:   user.UserID,
+			Username: user.Username,
+			Email:    user.Email,
+			RoleId:   user.RoleId,
+			CreateAt: user.CreateAt,
+			UpdateAt: user.UpdateAt,
+		}
+		userResponses = userResponse
+	}
+
+	return &userResponses, nil
 }

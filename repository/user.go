@@ -23,7 +23,7 @@ type NewUserRequest struct {
 }
 
 type UserRepository interface {
-	RegisterUser(*NewUserRequest) (*User, error)
+	RegisterUser(*NewUserRequest) ([]User, error)
 	GetAll() ([]User, error)
 	GetUserByEmail(email string) ([]User, error)
 	// GetbyId(int) (*User, error)

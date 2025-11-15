@@ -14,23 +14,27 @@ func NewUserRepositoryDB(db *sqlx.DB) userRepositoryDB {
 	return userRepositoryDB{db: db}
 }
 
-func (r userRepositoryDB) RegisterUser(body *NewUserRequest) (*User, error) {
-	fmt.Println("repository", &body)
-	fmt.Println("repository", body)
+func (r userRepositoryDB) RegisterUser(body *NewUserRequest) ([]User, error) {
 
 	// user := User{}
-	query := `INSERT INTO users (id, username, password, email) VALUE( ? , ?, ?, ?)`
+	query := `INSERT INTO users (username, password, email) VALUE( ?, ?, ?)`
 
 	// สร้าง token
-	_, err := r.db.Exec(query, 99, body.Username, body.Password, body.Email)
+	_, err := r.db.Exec(query, body.Username, body.Password, body.Email)
 
 	if err != nil {
 		return nil, err
 	}
 
-	// อยากให้ return row นั้นมาต้อง query เพิ่ม
+	user, err := r.GetUserByEmail(body.Email)
 
-	return nil, nil
+	if err != nil {
+		return nil, err
+	}
+
+	fmt.Println("repo regis return row", user)
+
+	return user, nil
 }
 
 func (r userRepositoryDB) GetAll() ([]User, error) {
@@ -55,8 +59,6 @@ func (r userRepositoryDB) GetUserByEmail(email string) ([]User, error) {
 	if err != nil {
 		return nil, err
 	}
-
-	fmt.Println("user", user)
 
 	return user, nil
 

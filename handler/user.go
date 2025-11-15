@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"fmt"
 	"go-project/service"
 
 	r "go-project/repository"
@@ -34,14 +33,13 @@ func (h userHandler) RegisterUser(c *fiber.Ctx) error {
 	if err := c.BodyParser(&body); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "cannot parse JSON"})
 	}
-	_, err := h.userSrv.RegisterUser(c.Context(), body)
 
-	fmt.Println("err", err)
+	user, err := h.userSrv.RegisterUser(c.Context(), body)
 
 	if err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": err.Error()})
 	}
 
-	return handleSuccess(c, body)
+	return handleSuccess(c, user)
 
 }
