@@ -25,6 +25,7 @@ type NewUserRequest struct {
 
 type UserService interface {
 	RegisterUser(ctx context.Context, newUser *r.NewUserRequest) (*UserResponse, error)
+	Login(ctx context.Context, email, password string) (string, error)
 	GetUsers() ([]UserResponse, error)
 	// GetUser(int) (*UserResponse, error)
 }

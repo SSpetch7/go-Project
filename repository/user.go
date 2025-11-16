@@ -5,6 +5,7 @@ import "time"
 type User struct {
 	UserID   int       `db:"id"`
 	Username string    `db:"username"`
+	Password string    `db:"password"`
 	Email    string    `db:"email"`
 	RoleId   string    `db:"role_id"`
 	CreateAt time.Time `db:"create_at"`
@@ -24,6 +25,7 @@ type NewUserRequest struct {
 
 type UserRepository interface {
 	RegisterUser(*NewUserRequest) ([]User, error)
+	// Login(email, password string)
 	GetAll() ([]User, error)
 	GetUserByEmail(email string) ([]User, error)
 	// GetbyId(int) (*User, error)

@@ -1,8 +1,6 @@
 package repository
 
 import (
-	"fmt"
-
 	"github.com/jmoiron/sqlx"
 )
 
@@ -16,10 +14,8 @@ func NewUserRepositoryDB(db *sqlx.DB) userRepositoryDB {
 
 func (r userRepositoryDB) RegisterUser(body *NewUserRequest) ([]User, error) {
 
-	// user := User{}
 	query := `INSERT INTO users (username, password, email) VALUE( ?, ?, ?)`
 
-	// สร้าง token
 	_, err := r.db.Exec(query, body.Username, body.Password, body.Email)
 
 	if err != nil {
@@ -31,8 +27,6 @@ func (r userRepositoryDB) RegisterUser(body *NewUserRequest) ([]User, error) {
 	if err != nil {
 		return nil, err
 	}
-
-	fmt.Println("repo regis return row", user)
 
 	return user, nil
 }
@@ -53,7 +47,7 @@ func (r userRepositoryDB) GetAll() ([]User, error) {
 
 func (r userRepositoryDB) GetUserByEmail(email string) ([]User, error) {
 	user := []User{}
-	query := "SELECT id, username, email, role_id, create_at, update_at FROM users WHERE email = ?"
+	query := "SELECT id, username, email, password,role_id, create_at, update_at FROM users WHERE email = ?"
 	err := r.db.Select(&user, query, email)
 
 	if err != nil {

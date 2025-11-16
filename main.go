@@ -27,12 +27,13 @@ func main() {
 	userService := service.NewUserService(userRepository)
 	userHandler := handler.NewUserHandler(userService)
 
-	_ = userRepository
+	// _ = userRepository
 	// _ = customerRepositoryMock
 
 	app := fiber.New()
 	app.Get("/users", userHandler.GetUsers)
 	app.Post("/users", userHandler.RegisterUser)
+	app.Post("/login", userHandler.Login)
 	app.Listen(fmt.Sprintf(":%v", viper.GetInt("app.port")))
 
 }

@@ -8,3 +8,6 @@ db:
   username: root
   password: password
   database: task_management
+
+env:
+  jwtSecretKey: "TESTSECRETKEY"
