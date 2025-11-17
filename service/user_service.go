@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"github.com/golang-jwt/jwt/v4"
+	"github.com/spf13/viper"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -108,7 +109,8 @@ func (s userService) Login(ctx context.Context, email, password string) (string,
 
 	// generate token
 
-	jwtSecretKey := "TESTsecret"
+	jwtSecretKey := viper.GetString("env.jwtSecretKey")
+
 	token := jwt.New(jwt.SigningMethodHS256)
 	claims := token.Claims.(jwt.MapClaims)
 	claims["id"] = user[0].UserID

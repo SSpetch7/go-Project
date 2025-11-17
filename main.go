@@ -27,6 +27,9 @@ func main() {
 	userService := service.NewUserService(userRepository)
 	userHandler := handler.NewUserHandler(userService)
 
+	authService := service.NewAuthService()
+	authHandler := handler.NewAuthHandler(authService)
+
 	// _ = userRepository
 	// _ = customerRepositoryMock
 
@@ -34,6 +37,7 @@ func main() {
 	app.Get("/users", userHandler.GetUsers)
 	app.Post("/users", userHandler.RegisterUser)
 	app.Post("/login", userHandler.Login)
+	app.Get("/auth/:token", authHandler.VerifyToken)
 	app.Listen(fmt.Sprintf(":%v", viper.GetInt("app.port")))
 
 }
