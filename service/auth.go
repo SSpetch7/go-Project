@@ -14,5 +14,6 @@ type PayloadToken struct {
 }
 
 type AuthService interface {
+	CreateToken(ctx context.Context, data PayloadToken) (string, error)
 	VerifyToken(ctx context.Context, token string) (*PayloadToken, error)
 }

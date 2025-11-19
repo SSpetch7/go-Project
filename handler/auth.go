@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"fmt"
 	"go-project/service"
 
 	"github.com/gofiber/fiber/v2"
@@ -18,8 +17,6 @@ func NewAuthHandler(authSrv service.AuthService) authHandler {
 func (h authHandler) VerifyToken(c *fiber.Ctx) error {
 
 	params := c.AllParams()
-
-	fmt.Println("params", params)
 
 	token, notNil := params["token"]
 

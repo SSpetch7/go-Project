@@ -3,14 +3,10 @@ package service
 import (
 	"context"
 	"errors"
-	"fmt"
 	"go-project/repository"
 	r "go-project/repository"
 	"log"
-	"time"
 
-	"github.com/golang-jwt/jwt/v4"
-	"github.com/spf13/viper"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -90,7 +86,6 @@ func (s userService) RegisterUser(ctx context.Context, newUser *r.NewUserRequest
 }
 
 func (s userService) Login(ctx context.Context, email, password string) (string, error) {
-	fmt.Println("====== user_service / login =======")
 	user, err := s.userRepo.GetUserByEmail(email)
 
 	if err != nil {
@@ -107,26 +102,19 @@ func (s userService) Login(ctx context.Context, email, password string) (string,
 		return "", errors.New("login is fail")
 	}
 
-	// generate token
+	token, err := NewAuthService().CreateToken(ctx, PayloadToken{
+		UserID:   user[0].UserID,
+		Username: user[0].Username,
+		Email:    user[0].Email,
+		RoleId:   user[0].RoleId,
+		CreateAt: user[0].CreateAt.String(),
+		UpdateAt: user[0].UpdateAt.String(),
+	})
 
-	jwtSecretKey := viper.GetString("env.jwtSecretKey")
-
-	token := jwt.New(jwt.SigningMethodHS256)
-	claims := token.Claims.(jwt.MapClaims)
-	claims["id"] = user[0].UserID
-	claims["username"] = user[0].Username
-	claims["email"] = user[0].Email
-	claims["role"] = user[0].RoleId
-	claims["createAt"] = user[0].CreateAt
-	claims["updateAt"] = user[0].UpdateAt
-	claims["exp"] = time.Now().Add(time.Hour * 72).Unix()
-
-	accessToken, err := token.SignedString([]byte(jwtSecretKey))
 	if err != nil {
 		return "", err
 	}
 
-	fmt.Println("====== user_service / login =======")
-	return accessToken, nil
+	return token, nil
 
 }
