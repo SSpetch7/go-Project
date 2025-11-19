@@ -22,6 +22,7 @@ func main() {
 	db := initDatabase()
 
 	userRepository := repository.NewUserRepositoryDB(db) // DB
+	urlRepository := repository.NewURLRepository(db)     // DB
 	// customerRepositoryMock := repository.NewCustomerRepositoryMock() // Mock
 
 	userService := service.NewUserService(userRepository)
@@ -29,6 +30,9 @@ func main() {
 
 	authService := service.NewAuthService()
 	authHandler := handler.NewAuthHandler(authService)
+
+	urlService := service.NewURLService(urlRepository)
+	urlHandler := handler.NewURLHandler(urlService)
 
 	// _ = userRepository
 	// _ = customerRepositoryMock
@@ -38,6 +42,8 @@ func main() {
 	app.Post("/users", userHandler.RegisterUser)
 	app.Post("/login", userHandler.Login)
 	app.Get("/auth/:token", authHandler.VerifyToken)
+
+	app.Post("/url", urlHandler.CreateShortURL)
 	app.Listen(fmt.Sprintf(":%v", viper.GetInt("app.port")))
 
 }
