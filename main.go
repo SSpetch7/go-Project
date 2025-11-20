@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"go-project/handler"
+	"go-project/middleware"
 	"go-project/repository"
 	"go-project/service"
 	"strings"
@@ -43,7 +44,9 @@ func main() {
 	app.Post("/login", userHandler.Login)
 	app.Get("/auth/:token", authHandler.VerifyToken)
 
-	app.Post("/url", urlHandler.CreateShortURL)
+	auth := app.Group("/api", middleware.AuthRequired())
+
+	auth.Post("/url", urlHandler.CreateShortURL)
 	app.Listen(fmt.Sprintf(":%v", viper.GetInt("app.port")))
 
 }
