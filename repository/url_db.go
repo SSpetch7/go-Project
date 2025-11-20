@@ -30,9 +30,9 @@ func (r urlRepositoryDB) InsertURL(body *OriginalURLInsert) error {
 
 func (r urlRepositoryDB) GetOriginURL(shortURL string) (*URLResponse, error) {
 
-	urlRes := &URLResponse{}
+	urlRes := []URLResponse{}
 
-	query := "SELECT id, origin, user_id from URL_store WHERE short_url = ?"
+	query := "SELECT id, origin_url, user_id from URL_store WHERE short_url = ?"
 
 	err := r.db.Select(&urlRes, query, shortURL)
 
@@ -40,5 +40,5 @@ func (r urlRepositoryDB) GetOriginURL(shortURL string) (*URLResponse, error) {
 		return nil, err
 	}
 
-	return urlRes, nil
+	return &urlRes[0], nil
 }

@@ -77,5 +77,20 @@ func (s urlService) HashURL(longURL string) (string, error) {
 }
 
 func (s urlService) GetOriginalURL(shortURL string) (*OriginalURLResponse, error) {
-	return nil, nil
+
+	originRes := &repository.URLResponse{}
+
+	originRes, err := s.urlRepo.GetOriginURL(shortURL)
+
+	if err != nil {
+		return nil, err
+	}
+
+	response := &OriginalURLResponse{
+		Id:          originRes.Id,
+		OriginalURL: originRes.LongURL,
+		UserId:      originRes.UserID,
+	}
+
+	return response, nil
 }

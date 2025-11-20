@@ -46,6 +46,7 @@ func main() {
 
 	auth := app.Group("/api", middleware.AuthRequired())
 
+	app.Get("/:url", urlHandler.GetOriginalURL)
 	auth.Post("/url", urlHandler.CreateShortURL)
 	app.Listen(fmt.Sprintf(":%v", viper.GetInt("app.port")))
 

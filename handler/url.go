@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"fmt"
 	r "go-project/repository"
 	"go-project/service"
 
@@ -35,4 +36,17 @@ func (h urlHandler) CreateShortURL(c *fiber.Ctx) error {
 	}
 
 	return handleSuccess(c, longURL)
+}
+
+func (h urlHandler) GetOriginalURL(c *fiber.Ctx) error {
+	params := c.Params("url")
+
+	origin, err := h.urlSrv.GetOriginalURL(params)
+
+	if err != nil {
+		fmt.Println("GetOriginalURL err: ", err)
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "cannot found original_url"})
+	}
+
+	return c.Redirect(origin.OriginalURL, 301)
 }

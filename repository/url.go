@@ -1,7 +1,7 @@
 package repository
 
 type URLResponse struct {
-	id      int64  `db:"id"`
+	Id      int64  `db:"id"`
 	LongURL string `db:"origin_url"`
 	UserID  int64  `db:"user_id"`
 }
