@@ -18,39 +18,32 @@ func NewURLService(urlRepo repository.URLRepository) urlService {
 func (s urlService) CreateShortURL(longURL string, userId int) (string, error) {
 	isNotExist := true
 
-	shortURL := longURL
+	hashURL := &HashURLResponse{
+		longHash:  longURL,
+		shortHash: longURL,
+	}
 	var err error
 
 	for isNotExist {
-		shortURL, err = s.HashURL(shortURL)
-		result, errOrignal := s.urlRepo.GetOriginURL(shortURL)
+		hashURL, err = s.HashURL(hashURL)
 
-		if errOrignal != nil {
-			return "", errOrignal
+		if err != nil {
+			return "", err
 		}
 
-		fmt.Println("result", result)
+		result, errOrignal := s.urlRepo.GetOriginURL(hashURL.shortHash)
+
+		if errOrignal != nil && errOrignal.Error() != "not found data" {
+			return "", errOrignal
+		}
 
 		isNotExist = result != nil
 
 	}
-	if err != nil {
-		fmt.Println("isNotExist err: ", err)
-		return "", err
-	}
-
-	// shortURL, err := s.HashURL(longURL)
-
-	// if err != nil {
-	// 	return "", err
-	// }
-
-	// return shortURL, nil
-	// item := OriginalURLInsert{}
 
 	item := repository.OriginalURLInsert{
 		OriginalURL: longURL,
-		ShortURL:    shortURL,
+		ShortURL:    hashURL.shortHash,
 		UserID:      userId,
 	}
 
@@ -64,16 +57,18 @@ func (s urlService) CreateShortURL(longURL string, userId int) (string, error) {
 	return "", nil
 }
 
-func (s urlService) HashURL(longURL string) (string, error) {
-	hash := sha256.Sum256([]byte(longURL))
+func (s urlService) HashURL(URL *HashURLResponse) (*HashURLResponse, error) {
+	hash := sha256.Sum256([]byte(URL.longHash))
 	encoded := base64.URLEncoding.EncodeToString(hash[:])
 
 	shortHash, longHash := encoded[:7], encoded
 
-	fmt.Println("shortHash", shortHash)
-	fmt.Println("longHash", longHash)
+	resHash := HashURLResponse{
+		longHash:  longHash,
+		shortHash: shortHash,
+	}
 
-	return shortHash, nil
+	return &resHash, nil
 }
 
 func (s urlService) GetOriginalURL(shortURL string) (*OriginalURLResponse, error) {

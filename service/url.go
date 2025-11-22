@@ -12,8 +12,13 @@ type OriginalURLInsert struct {
 	UserID      int
 }
 
+type HashURLResponse struct {
+	longHash  string
+	shortHash string
+}
+
 type URLService interface {
 	CreateShortURL(longURL string, userId int) (string, error)
-	HashURL(longURL string) (string, error)
+	HashURL(URL *HashURLResponse) (*HashURLResponse, error)
 	GetOriginalURL(shortURL string) (*OriginalURLResponse, error)
 }

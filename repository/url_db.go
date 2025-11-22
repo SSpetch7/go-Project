@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"errors"
 	"fmt"
 
 	"github.com/jmoiron/sqlx"
@@ -35,6 +36,10 @@ func (r urlRepositoryDB) GetOriginURL(shortURL string) (*URLResponse, error) {
 	query := "SELECT id, origin_url, user_id from URL_store WHERE short_url = ?"
 
 	err := r.db.Select(&urlRes, query, shortURL)
+
+	if len(urlRes) < 1 {
+		return nil, errors.New("not found data")
+	}
 
 	if err != nil {
 		return nil, err
