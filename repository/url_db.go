@@ -16,9 +16,9 @@ func NewURLRepository(db *sqlx.DB) urlRepositoryDB {
 }
 
 func (r urlRepositoryDB) InsertURL(body *OriginalURLInsert) error {
-	fmt.Println("body", body)
-
 	query := `INSERT INTO URL_store (origin_url, short_url, user_id) VALUE( ?, ?, ?)`
+
+	fmt.Println("INSERT_SECCESS")
 
 	_, err := r.db.Exec(query, body.OriginalURL, body.ShortURL, body.UserID)
 

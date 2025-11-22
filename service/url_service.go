@@ -17,13 +17,15 @@ func NewURLService(urlRepo repository.URLRepository) urlService {
 
 func (s urlService) CreateShortURL(longURL string, userId int) (string, error) {
 	isNotExist := true
+	urlDup := ""
+
+	itemInsert := repository.OriginalURLInsert{}
 
 	hashURL := &HashURLResponse{
 		longHash:  longURL,
 		shortHash: longURL,
 	}
 	var err error
-
 	for isNotExist {
 		hashURL, err = s.HashURL(hashURL)
 
@@ -37,24 +39,33 @@ func (s urlService) CreateShortURL(longURL string, userId int) (string, error) {
 			return "", errOrignal
 		}
 
-		isNotExist = result != nil
+		if result == nil {
+			isNotExist = false
+		} else if result.LongURL == longURL {
+			isNotExist = false
+			urlDup = result.LongURL
+		}
 
 	}
 
-	item := repository.OriginalURLInsert{
+	itemInsert = repository.OriginalURLInsert{
 		OriginalURL: longURL,
 		ShortURL:    hashURL.shortHash,
 		UserID:      userId,
 	}
 
-	err = s.urlRepo.InsertURL(&item)
+	if itemInsert.OriginalURL == urlDup {
+		return itemInsert.ShortURL, nil
+	}
+
+	err = s.urlRepo.InsertURL(&itemInsert)
 
 	if err != nil {
 		fmt.Println("InsertURL err: ", err)
 		return "", err
 	}
 
-	return "", nil
+	return itemInsert.ShortURL, nil
 }
 
 func (s urlService) HashURL(URL *HashURLResponse) (*HashURLResponse, error) {
@@ -83,8 +94,9 @@ func (s urlService) GetOriginalURL(shortURL string) (*OriginalURLResponse, error
 
 	response := &OriginalURLResponse{
 		Id:          originRes.Id,
-		OriginalURL: originRes.LongURL,
 		UserId:      originRes.UserID,
+		OriginalURL: originRes.LongURL,
+		HashURL:     originRes.HashURL,
 	}
 
 	return response, nil

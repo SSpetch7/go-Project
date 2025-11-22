@@ -1,9 +1,10 @@
 package service
 
 type OriginalURLResponse struct {
-	Id          int64  `json:"id"`
-	OriginalURL string `json:"original_url"`
-	UserId      int64  `json:"user_id"`
+	Id          int64
+	OriginalURL string
+	UserId      int64
+	HashURL     string
 }
 
 type OriginalURLInsert struct {

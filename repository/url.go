@@ -2,8 +2,9 @@ package repository
 
 type URLResponse struct {
 	Id      int64  `db:"id"`
-	LongURL string `db:"origin_url"`
 	UserID  int64  `db:"user_id"`
+	LongURL string `db:"origin_url"`
+	HashURL string `db:"short_url"`
 }
 
 type OriginalURLInsert struct {
