@@ -2,9 +2,10 @@ package service
 
 import (
 	"crypto/sha256"
-	"encoding/base64"
 	"fmt"
 	"go-project/repository"
+
+	"github.com/spf13/viper"
 )
 
 type urlService struct {
@@ -68,11 +69,38 @@ func (s urlService) CreateShortURL(longURL string, userId int) (string, error) {
 	return itemInsert.ShortURL, nil
 }
 
+func toBase62(num uint64) string {
+	result := make([]byte, 0)
+
+	characters := viper.GetString("env.base62Char")
+
+	fmt.Println("characters", characters)
+
+	for num > 0 {
+		result = append([]byte{characters[num%62]}, result...)
+		num /= 62
+	}
+	return string(result)
+}
+
 func (s urlService) HashURL(URL *HashURLResponse) (*HashURLResponse, error) {
 	hash := sha256.Sum256([]byte(URL.longHash))
-	encoded := base64.URLEncoding.EncodeToString(hash[:])
 
-	shortHash, longHash := encoded[:7], encoded
+	num := uint64(0)
+	for i := 0; i < 8; i++ {
+		num = (num << 8) | uint64(hash[i])
+	}
+
+	fmt.Println("num", num)
+
+	base62 := toBase62(num)
+
+	fmt.Println("base62", base62)
+
+	// encoded := base64.URLEncoding.EncodeToString(hash[:])
+	// encoded := base64.URLEncoding.EncodeToString(hash[:])
+
+	shortHash, longHash := base62[:7], base62
 
 	resHash := HashURLResponse{
 		longHash:  longHash,
