@@ -2,5 +2,5 @@
 
 
 config.yaml
-*.yml
-Dockerfile
+# *.yml
+# Dockerfile
