@@ -31,7 +31,7 @@ func AuthRequired() fiber.Handler {
 		// Parse & verify JWT
 		claims := jwt.MapClaims{}
 		token, err := jwt.ParseWithClaims(tokenString, claims, func(token *jwt.Token) (interface{}, error) {
-			return []byte(viper.GetString("JWT_SECRET_KEY")), nil
+			return []byte(viper.GetString("env.jwtSecretKey")), nil
 		})
 
 		if err != nil || !token.Valid {

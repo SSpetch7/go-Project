@@ -20,7 +20,7 @@ func NewAuthService() authService {
 
 func (auth authService) CreateToken(ctx context.Context, data PayloadToken) (string, error) {
 
-	jwtSecretKey := viper.GetString("JWT_SECRET_KEY")
+	jwtSecretKey := viper.GetString("env.jwtSecretKey")
 
 	token := jwt.New(jwt.SigningMethodHS256)
 	claims := token.Claims.(jwt.MapClaims)
@@ -48,7 +48,7 @@ func (auth authService) VerifyToken(ctx context.Context, tokenString string) (*P
 		if _, ok := t.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, errors.New("unexpected signing method")
 		}
-		return []byte(viper.GetString("JWT_SECRET_KEY")), nil
+		return []byte(viper.GetString("env.jwtSecretKey")), nil
 	})
 
 	if err != nil {

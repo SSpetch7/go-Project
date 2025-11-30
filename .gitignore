@@ -1,6 +1,6 @@
 /mysql_data
 
-.env
+
 config.yaml
 *.yml
 Dockerfile

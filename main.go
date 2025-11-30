@@ -48,14 +48,21 @@ func main() {
 
 	app.Get("/:url", urlHandler.GetOriginalURL)
 	auth.Post("/url", urlHandler.CreateShortURL)
-	app.Listen(fmt.Sprintf(":%v", viper.GetInt("APP_PORT")))
+	app.Listen(fmt.Sprintf(":%v", viper.GetInt("app.port")))
 
 }
 
 func initConfig() {
+<<<<<<< HEAD
 	viper.SetConfigName("")
 	// viper.SetConfigType("yaml")
 	// viper.AddConfigPath(".")
+=======
+	viper.SetConfigName("config")
+	viper.SetConfigType("yaml")
+	viper.AddConfigPath(".")
+
+>>>>>>> parent of d091d2b (แก้ config)
 	// เป็นการ set ค่าเฉพาะ เช่น เปลี่ยนจาก app.port = 8000 เป็น 5000 จะได้ว่า APP_PORT=5000 ใช้กับ dockerfiler
 	viper.AutomaticEnv()
 	viper.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
@@ -79,15 +86,13 @@ func initTimeZome() {
 
 func initDatabase() *sqlx.DB {
 	dsn := fmt.Sprintf("%v:%v@tcp(%v:%v)/%v?parseTime=true",
-		viper.GetString("DB_USERNAME"),
-		viper.GetString("DB_PASSWORD"),
-		viper.GetString("DB_HOST"),
-		viper.GetString("DB_PORT"),
-		viper.GetString("DB_DATABASE"))
+		viper.GetString("db.username"),
+		viper.GetString("db.password"),
+		viper.GetString("db.host"),
+		viper.GetString("db.port"),
+		viper.GetString("db.database"))
 
-	fmt.Println("dsn", dsn)
-
-	db, err := sqlx.Open(viper.GetString("DB_DRIVER"), dsn)
+	db, err := sqlx.Open(viper.GetString("db.driver"), dsn)
 
 	if err != nil {
 		panic(err)
