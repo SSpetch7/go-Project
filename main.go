@@ -56,7 +56,6 @@ func initConfig() {
 	// viper.SetConfigName("config")
 	// viper.SetConfigType("yaml")
 	// viper.AddConfigPath(".")
-	viper.SetConfigFile(".env")
 	// เป็นการ set ค่าเฉพาะ เช่น เปลี่ยนจาก app.port = 8000 เป็น 5000 จะได้ว่า APP_PORT=5000 ใช้กับ dockerfiler
 	viper.AutomaticEnv()
 	viper.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
