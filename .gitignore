@@ -2,3 +2,5 @@
 
 .env
 config.yaml
+*.yml
+Dockerfile
