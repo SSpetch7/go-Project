@@ -79,8 +79,6 @@ services:
       TZ: Asia/Bangkok
     ports:
       - "8000:8000"
-    # volumes:
-    #   - .:/app
     restart: always
     networks:
     - app-network

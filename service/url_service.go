@@ -72,7 +72,7 @@ func (s urlService) CreateShortURL(longURL string, userId int) (string, error) {
 func toBase62(num uint64) string {
 	result := make([]byte, 0)
 
-	characters := viper.GetString("env.base62Char")
+	characters := viper.GetString("BASE62CHAR")
 
 	for num > 0 {
 		result = append([]byte{characters[num%62]}, result...)
